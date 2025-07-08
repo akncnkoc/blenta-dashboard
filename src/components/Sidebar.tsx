@@ -32,13 +32,6 @@ export default function Sidebar() {
           Tag
         </Link>
 
-        <Link
-          to="/"
-          className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded transition"
-        >
-          Questions
-        </Link>
-
         <button
           onClick={logout}
           className="flex items-center gap-2 text-left hover:bg-red-600 px-3 py-2 rounded transition"

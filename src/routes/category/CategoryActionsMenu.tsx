@@ -6,7 +6,10 @@ interface Props {
   category: Category
   onShowChildren: (cat: Category) => void
   onEdit: (cat: Category) => void
-  onDelete: (id: string) => void
+  onDelete: (id: string, name: string) => void
+  showCategoryTags: (id: string) => void
+  showCategoryQuestions: (id: string) => void
+  showChildCategories: (id: string) => void
   onAddTag: (id: string) => void
   onAddQuestion: (id: string) => void
 }
@@ -17,6 +20,9 @@ export function CategoryActionsMenu({
   onEdit,
   onDelete,
   onAddTag,
+  showCategoryTags,
+  showCategoryQuestions,
+  showChildCategories,
   onAddQuestion,
 }: Props) {
   return (
@@ -37,7 +43,13 @@ export function CategoryActionsMenu({
             onSelect={() => onShowChildren(category)}
             className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
           >
-            Show Children
+            Show Info
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={() => showChildCategories(category.id)}
+            className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+          >
+            Show Child Categories
           </DropdownMenu.Item>
           <DropdownMenu.Item
             onSelect={() => onEdit(category)}
@@ -46,10 +58,16 @@ export function CategoryActionsMenu({
             Edit
           </DropdownMenu.Item>
           <DropdownMenu.Item
-            onSelect={() => onDelete(category.id)}
+            onSelect={() => onDelete(category.id, category.name)}
             className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
           >
             Delete
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={() => showCategoryTags(category.id)}
+            className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+          >
+            Show Tags
           </DropdownMenu.Item>
           <DropdownMenu.Item
             onSelect={() => onAddTag(category.id)}
@@ -58,10 +76,10 @@ export function CategoryActionsMenu({
             Add Tag
           </DropdownMenu.Item>
           <DropdownMenu.Item
-            onSelect={() => onAddQuestion(category.id)}
+            onSelect={() => showCategoryQuestions(category.id)}
             className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
           >
-            Add Question
+            Show Questions
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

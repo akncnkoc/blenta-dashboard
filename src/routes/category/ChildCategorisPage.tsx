@@ -1,27 +1,31 @@
-import { useState, useEffect } from 'react'
-import {
-  useLazyGetAllCategoriesQuery,
-  type Category,
-} from '@/services/api/category-api'
+import { useState, useMemo } from 'react'
+import { useGetCategoryQuery, type Category } from '@/services/api/category-api'
 import { CategoryTable } from '@/routes/category/CategoryTable'
-import { CategorySearchBar } from '@/routes/category//CategorySearchBar'
+import { CategorySearchBar } from '@/routes/category/CategorySearchBar'
 import { CategoryDetailsModal } from '@/routes/category/CategoryDetailsModal'
 import { CategoryPagination } from '@/routes/category/CategoryPagination'
 import { CategoryCreateModal } from '@/routes/category/CategoryCreateModal'
 import { CategoryEditModal } from './CategoryEditModal'
 import { CategoryAddTagModal } from './CategoryAddTagModal'
 import { CategoryDeleteModal } from './CategoryDeleteModal'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 
-export default function CategoryPage() {
+export default function ChildCategoriesPage() {
   const navigate = useNavigate()
+  const { categoryId } = useParams({ from: '/category/$categoryId' })
+  const {
+    data: parentCategory,
+    isLoading,
+    error,
+  } = useGetCategoryQuery(categoryId)
   const [search, setSearch] = useState('')
-  const [lang, setLang] = useState<'en' | 'tr'>('tr')
+  const [lang, setLang] = useState<'en' | 'tr'>('tr') // optional if you want to filter lang client side
   const [page, setPage] = useState(1)
+  const size = 10
+
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null,
   )
-  const size = 10
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [editedCategoryId, setEditedCategoryId] = useState('')
@@ -32,26 +36,38 @@ export default function CategoryPage() {
     id: string
     name: string
   } | null>(null)
-  const [getAllCategories, { isLoading }] = useLazyGetAllCategoriesQuery()
-  const [categories, setCategories] = useState<Category[]>([])
-  const [totalCount, setTotalCount] = useState(0)
 
-  useEffect(() => {
-    getAllCategories({
-      search: search || undefined,
-      page: String(page),
-      size: String(size),
-      lang,
-    }).then((res) => {
-      if (res?.data) {
-        setCategories(res.data.data)
-        setTotalCount(res.data.meta.total)
-      }
+  // filter childCategories by search & lang (if needed)
+  const filteredChildren = useMemo(() => {
+    if (!parentCategory?.childCategories) return []
+
+    return parentCategory.childCategories.filter((cat: Category) => {
+      const matchesSearch = cat.name
+        .toLowerCase()
+        .includes(search.toLowerCase())
+      const matchesLang = lang ? cat.culture === lang : true
+      return matchesSearch && matchesLang
     })
-  }, [search, page, lang])
+  }, [parentCategory, search, lang])
+
+  // paginate filtered children
+  const pagedChildren = useMemo(() => {
+    const start = (page - 1) * size
+    return filteredChildren.slice(start, start + size)
+  }, [filteredChildren, page, size])
+
+  // total count for pagination
+  const totalCount = filteredChildren.length
+
+  if (isLoading) return <div>Loading...</div>
+  if (error || !parentCategory) return <div>Error loading category</div>
 
   return (
     <div className="p-4 w-full">
+      <h2 className="text-xl font-bold mb-4">
+        Parent Category: {parentCategory.name}
+      </h2>
+
       <div className="flex justify-between items-center mb-4">
         <CategorySearchBar
           search={search}
@@ -66,24 +82,24 @@ export default function CategoryPage() {
           onClick={() => setCreateOpen(true)}
           className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
-          + Add Category
+          + Add Subcategory
         </button>
       </div>
 
       <CategoryTable
-        data={categories}
-        totalCount={totalCount}
-        page={page}
-        size={size}
-        isLoading={isLoading}
-        onPageChange={setPage}
-        onShowChildren={setSelectedCategory}
         showChildCategories={(catId) => {
           navigate({
             to: '/category/$categoryId',
             params: { categoryId: catId },
           })
         }}
+        data={pagedChildren}
+        totalCount={totalCount}
+        page={page}
+        size={size}
+        isLoading={false} // no server loading here, you can enhance if you want
+        onPageChange={setPage}
+        onShowChildren={setSelectedCategory}
         onEdit={(cat) => {
           setEditedCategoryId(cat.id)
           setEditOpen(true)
@@ -91,17 +107,13 @@ export default function CategoryPage() {
         showCategoryTags={(categoryId) => {
           navigate({
             to: '/category/$id/tags',
-            params: {
-              id: categoryId,
-            },
+            params: { id: categoryId },
           })
         }}
         showCategoryQuestions={(categoryId) => {
           navigate({
             to: '/category/$id/questions',
-            params: {
-              id: categoryId,
-            },
+            params: { id: categoryId },
           })
         }}
         onDelete={(id: string, name: string) => {
@@ -126,6 +138,7 @@ export default function CategoryPage() {
         category={selectedCategory}
         onClose={() => setSelectedCategory(null)}
       />
+
       <CategoryCreateModal open={createOpen} onOpenChange={setCreateOpen} />
 
       <CategoryEditModal
@@ -136,6 +149,7 @@ export default function CategoryPage() {
         }}
         categoryId={editedCategoryId}
       />
+
       <CategoryAddTagModal
         open={addTagOpen}
         onOpenChange={(open) => {
@@ -144,6 +158,7 @@ export default function CategoryPage() {
         }}
         categoryId={tagCategoryId}
       />
+
       {categoryToDelete && (
         <CategoryDeleteModal
           open={deleteOpen}

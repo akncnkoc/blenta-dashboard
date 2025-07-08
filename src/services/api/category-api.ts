@@ -21,11 +21,10 @@ export type CreateCategoryRequest = {
   type: string
   isPremiumCat: boolean
   isRefCat: boolean
-  referenceCode: string | null
 }
 
 export const categoryApi = createApi({
-  reducerPath: 'user',
+  reducerPath: 'category',
   baseQuery: baseQueryConfigWithReAuth,
   endpoints: (builder) => ({
     getAllCategories: builder.query<
@@ -55,11 +54,20 @@ export const categoryApi = createApi({
         },
       }),
     }),
+    deleteCategory: builder.mutation<any, string>({
+      query: (body) => ({
+        url: `category/` + body,
+        method: 'DELETE',
+        body,
+      }),
+    }),
   }),
 })
 
 export const {
   useLazyGetAllCategoriesQuery,
   useLazyGetCategoryQuery,
+  useGetCategoryQuery,
   useCreateCategoryMutation,
+  useDeleteCategoryMutation,
 } = categoryApi

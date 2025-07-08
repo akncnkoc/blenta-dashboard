@@ -17,7 +17,10 @@ interface Props {
   onPageChange: (page: number) => void
   onShowChildren: (cat: Category) => void
   onEdit: (cat: Category) => void
-  onDelete: (id: string) => void
+  onDelete: (id: string, name: string) => void
+  showCategoryTags: (id: string) => void
+  showCategoryQuestions: (id: string) => void
+  showChildCategories: (id: string) => void
   onAddTag: (id: string) => void
   onAddQuestion: (id: string) => void
 }
@@ -30,6 +33,9 @@ export function CategoryTable({
   isLoading,
   onPageChange,
   onShowChildren,
+  showCategoryTags,
+  showCategoryQuestions,
+  showChildCategories,
   onEdit,
   onDelete,
   onAddTag,
@@ -55,6 +61,9 @@ export function CategoryTable({
           onDelete={onDelete}
           onAddTag={onAddTag}
           onAddQuestion={onAddQuestion}
+          showChildCategories={showChildCategories}
+          showCategoryTags={showCategoryTags}
+          showCategoryQuestions={showCategoryQuestions}
         />
       ),
     },

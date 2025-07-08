@@ -22,6 +22,17 @@ export const tagApi = createApi({
         params: { search, page, size, lang },
       }),
     }),
+    getAllCategoryTags: builder.query<
+      {
+        data: Tag[]
+        meta: { total: number; page: string; size: string; pageCount: string }
+      },
+      { categoryId: string }
+    >({
+      query: ({ categoryId }) => ({
+        url: `/tag/category/` + categoryId,
+      }),
+    }),
     createTag: builder.mutation<void, { name: string }>({
       query: (body) => ({
         url: '/tag',
@@ -36,7 +47,18 @@ export const tagApi = createApi({
         body: { name },
       }),
     }),
-
+    addCategoryTag: builder.mutation<
+      void,
+      { categoryId: string; tagId: string }
+    >({
+      query: (body) => ({
+        url: '/category' + body.categoryId,
+        method: 'POST',
+        body: {
+          tagId: body.tagId,
+        },
+      }),
+    }),
     deleteTag: builder.mutation<void, string>({
       query: (id) => ({
         url: `/tag/${id}`,
@@ -51,4 +73,6 @@ export const {
   useDeleteTagMutation,
   useUpdateTagMutation,
   useCreateTagMutation,
+  useAddCategoryTagMutation,
+  useLazyGetAllCategoryTagsQuery,
 } = tagApi

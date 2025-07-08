@@ -6,6 +6,7 @@ import { rootReducer } from './rootReducer'
 import storage from './storage'
 import { categoryApi } from '@/services/api/category-api'
 import { tagApi } from '@/services/api/tag-api'
+import { questionApi } from '@/services/api/question-api'
 
 const persistConfig = {
   key: 'root',
@@ -29,7 +30,8 @@ const store = configureStore({
     })
       .concat(userApi.middleware)
       .concat(categoryApi.middleware)
-      .concat(tagApi.middleware),
+      .concat(tagApi.middleware)
+      .concat(questionApi.middleware),
 })
 
 const persistor = persistStore(store)

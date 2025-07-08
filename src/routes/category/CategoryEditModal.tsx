@@ -23,7 +23,6 @@ type FormValues = {
   culture: 'tr' | 'en'
   color: string
   type: 'QUESTION' | 'TEST'
-  referenceCode: string
   isPremiumCat: boolean
   isRefCat: boolean
 }
@@ -52,7 +51,6 @@ export function CategoryEditModal({ open, onOpenChange, categoryId }: Props) {
         culture: cat.culture ?? 'tr',
         color: '000000',
         type: cat.type ?? 'QUESTION',
-        referenceCode: cat.referenceCode ?? '',
         isPremiumCat: cat.isPremiumCat ?? false,
         isRefCat: cat.isRefCat ?? false,
       })
@@ -237,15 +235,6 @@ export function CategoryEditModal({ open, onOpenChange, categoryId }: Props) {
                     </Select.Content>
                   </Select.Portal>
                 </Select.Root>
-
-                {/* Reference Code */}
-                <Label>Reference Code</Label>
-                <input
-                  name="referenceCode"
-                  value={values.referenceCode}
-                  onChange={handleChange}
-                  className="w-full border px-3 py-2 rounded"
-                />
 
                 {/* Color */}
                 <Label>Color</Label>

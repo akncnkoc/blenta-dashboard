@@ -18,6 +18,9 @@ import Home from './routes/home'
 import Sidebar from './components/Sidebar'
 import Category from './routes/category'
 import Tag from './routes/tag'
+import CategoryTagsPage from './routes/category/CategoryTagsPage'
+import CategoryQuestionsPage from './routes/category/CategoryQuestionsPage'
+import ChildCategoriesPage from './routes/category/ChildCategorisPage'
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -53,6 +56,43 @@ const categoryRoute = createRoute({
     </ProtectedRoute>
   ),
 })
+const categoryChildRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/$categoryId',
+  component: () => (
+    <ProtectedRoute>
+      <div className="flex">
+        <Sidebar />
+        <ChildCategoriesPage />
+      </div>
+    </ProtectedRoute>
+  ),
+})
+const categoryTagRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/$id/tags',
+  component: () => (
+    <ProtectedRoute>
+      <div className="flex">
+        <Sidebar />
+        <CategoryTagsPage />
+      </div>
+    </ProtectedRoute>
+  ),
+})
+const categoryQuestionRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/$id/questions',
+  component: () => (
+    <ProtectedRoute>
+      <div className="flex">
+        <Sidebar />
+        <CategoryQuestionsPage />
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
 const tagRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/tag',
@@ -75,6 +115,9 @@ const loginRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   categoryRoute,
+  categoryChildRoute,
+  categoryTagRoute,
+  categoryQuestionRoute,
   tagRoute,
   loginRoute,
 ])
