@@ -36,6 +36,9 @@ const Login = () => {
       toast.dismiss()
       toast.success('Logged In')
       dispatch(setToken(res.data.accessToken))
+      navigate({
+        to: '/',
+      })
     } else {
       toast.dismiss()
       toast.error('email or password is wrong')
