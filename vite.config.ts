@@ -16,4 +16,9 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     },
   },
+  server: {
+    host: '0.0.0.0', // allows external access
+    port: 3000,
+    allowedHosts: ['dashboard.blenta.app'],
+  },
 })
