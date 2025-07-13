@@ -48,7 +48,7 @@ export default function CategoryPage() {
         setTotalCount(res.data.meta.total)
       }
     })
-  }, [search, page, lang])
+  }, [search, page, lang, editOpen])
 
   return (
     <div className="p-4 w-full">

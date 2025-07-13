@@ -6,9 +6,11 @@ import { Formik } from 'formik'
 import {
   useLazyGetAllCategoriesQuery,
   useLazyGetCategoryQuery,
+  useUpdateCategoryMutation,
 } from '@/services/api/category-api'
 import { useEffect, useState } from 'react'
 import { Label } from '@radix-ui/react-label'
+import { toast } from 'sonner'
 
 interface Props {
   open: boolean
@@ -30,6 +32,7 @@ type FormValues = {
 export function CategoryEditModal({ open, onOpenChange, categoryId }: Props) {
   const [lang, setLang] = useState<'en' | 'tr'>('tr')
   const [getCategory, { data: categoryData }] = useLazyGetCategoryQuery()
+  const [updateCategory] = useUpdateCategoryMutation()
   const [getAllCategories, { data: allCategories }] =
     useLazyGetAllCategoriesQuery()
   const [initialValues, setInitialValues] = useState<FormValues | null>(null)
@@ -81,9 +84,19 @@ export function CategoryEditModal({ open, onOpenChange, categoryId }: Props) {
           <Formik
             initialValues={initialValues}
             enableReinitialize
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={async (values, { setSubmitting }) => {
               // Submit update request here
               setSubmitting(false)
+
+              var res = await updateCategory({
+                ...values,
+                id: categoryId,
+              }).unwrap()
+              if (res.error) {
+                toast.error('Category cannot updated')
+                return
+              }
+              toast.success('Category updated')
               onOpenChange(false)
             }}
           >

@@ -23,6 +23,18 @@ export type CreateCategoryRequest = {
   isRefCat: boolean
 }
 
+export type UpdateCategoryRequest = {
+  id: string
+  name: string
+  description: string
+  parentCategoryId: string | null
+  culture: string
+  color: string
+  type: string
+  isPremiumCat: boolean
+  isRefCat: boolean
+}
+
 export const categoryApi = createApi({
   reducerPath: 'category',
   baseQuery: baseQueryConfigWithReAuth,
@@ -54,6 +66,16 @@ export const categoryApi = createApi({
         },
       }),
     }),
+    updateCategory: builder.mutation<any, UpdateCategoryRequest>({
+      query: (body) => ({
+        url: `category/` + body.id,
+        method: 'PUT',
+        body,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    }),
     deleteCategory: builder.mutation<any, string>({
       query: (body) => ({
         url: `category/` + body,
@@ -70,4 +92,5 @@ export const {
   useGetCategoryQuery,
   useCreateCategoryMutation,
   useDeleteCategoryMutation,
+  useUpdateCategoryMutation,
 } = categoryApi
