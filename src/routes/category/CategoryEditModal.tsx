@@ -32,6 +32,8 @@ type FormValues = {
 export function CategoryEditModal({ open, onOpenChange, categoryId }: Props) {
   const [lang, setLang] = useState<'en' | 'tr'>('tr')
   const [getCategory, { data: categoryData }] = useLazyGetCategoryQuery()
+  const [getParentCategory, { data: parentCategoryData }] =
+    useLazyGetCategoryQuery()
   const [updateCategory] = useUpdateCategoryMutation()
   const [getAllCategories, { data: allCategories }] =
     useLazyGetAllCategoriesQuery()

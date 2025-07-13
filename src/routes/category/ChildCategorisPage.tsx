@@ -139,7 +139,11 @@ export default function ChildCategoriesPage() {
         onClose={() => setSelectedCategory(null)}
       />
 
-      <CategoryCreateModal open={createOpen} onOpenChange={setCreateOpen} />
+      <CategoryCreateModal
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        parentCategoryCulture={parentCategory.culture}
+      />
 
       <CategoryEditModal
         open={editOpen}

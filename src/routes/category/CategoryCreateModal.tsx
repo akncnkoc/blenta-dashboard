@@ -20,14 +20,19 @@ import { toast } from 'sonner'
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
+  parentCategoryCulture?: string
 }
 
-export function CategoryCreateModal({ open, onOpenChange }: Props) {
+export function CategoryCreateModal({
+  open,
+  onOpenChange,
+  parentCategoryCulture,
+}: Props) {
   const initialValues: CreateCategoryRequest = {
     name: '',
     description: '',
     parentCategoryId: '',
-    culture: 'tr',
+    culture: parentCategoryCulture ?? 'tr',
     color: '#000000',
     type: 'QUESTION',
     isRefCat: false,
