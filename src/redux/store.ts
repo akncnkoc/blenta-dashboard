@@ -7,6 +7,7 @@ import storage from './storage'
 import { categoryApi } from '@/services/api/category-api'
 import { tagApi } from '@/services/api/tag-api'
 import { questionApi } from '@/services/api/question-api'
+import { promotionCodeApi } from '@/services/api/promotion-code-api'
 
 const persistConfig = {
   key: 'root',
@@ -31,6 +32,7 @@ const store = configureStore({
       .concat(userApi.middleware)
       .concat(categoryApi.middleware)
       .concat(tagApi.middleware)
+      .concat(promotionCodeApi.middleware)
       .concat(questionApi.middleware),
 })
 

@@ -21,6 +21,7 @@ import Tag from './routes/tag'
 import CategoryTagsPage from './routes/category/CategoryTagsPage'
 import CategoryQuestionsPage from './routes/category/CategoryQuestionsPage'
 import ChildCategoriesPage from './routes/category/ChildCategorisPage'
+import PromotionCodeScreen from './routes/promotion-code'
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -105,6 +106,18 @@ const tagRoute = createRoute({
     </ProtectedRoute>
   ),
 })
+const promotionCodeRoutes = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/promotion-code',
+  component: () => (
+    <ProtectedRoute>
+      <div className="flex">
+        <Sidebar />
+        <PromotionCodeScreen />
+      </div>
+    </ProtectedRoute>
+  ),
+})
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -119,6 +132,7 @@ const routeTree = rootRoute.addChildren([
   categoryTagRoute,
   categoryQuestionRoute,
   tagRoute,
+  promotionCodeRoutes,
   loginRoute,
 ])
 
