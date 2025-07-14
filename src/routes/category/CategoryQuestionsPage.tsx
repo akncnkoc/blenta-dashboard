@@ -19,7 +19,7 @@ import { CategoryQuestionUpdateModal } from './CategoryQuestionUpdateModal'
 export default function CategoryQuestionsPage() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const size = 1
+  const size = 10
   const [totalCount, setTotalCount] = useState(0)
 
   const [isCreateModalOpen, setCreateModalOpen] = useState(false)
