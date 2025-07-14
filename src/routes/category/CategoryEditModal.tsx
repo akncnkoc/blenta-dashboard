@@ -20,6 +20,7 @@ interface Props {
 
 type FormValues = {
   name: string
+  sort: number
   description: string
   parentCategoryId: string | null
   culture: 'tr' | 'en'
@@ -30,10 +31,8 @@ type FormValues = {
 }
 
 export function CategoryEditModal({ open, onOpenChange, categoryId }: Props) {
-  const [lang, setLang] = useState<'en' | 'tr'>('tr')
+  const [_, setLang] = useState<'en' | 'tr'>('tr')
   const [getCategory, { data: categoryData }] = useLazyGetCategoryQuery()
-  const [getParentCategory, { data: parentCategoryData }] =
-    useLazyGetCategoryQuery()
   const [updateCategory] = useUpdateCategoryMutation()
   const [getAllCategories, { data: allCategories }] =
     useLazyGetAllCategoriesQuery()
@@ -52,6 +51,7 @@ export function CategoryEditModal({ open, onOpenChange, categoryId }: Props) {
       setInitialValues({
         name: cat.name ?? '',
         description: cat.description ?? '',
+        sort: cat.sort,
         parentCategoryId: cat.parentCategoryId ?? null,
         culture: cat.culture ?? 'tr',
         color: '000000',
@@ -257,6 +257,15 @@ export function CategoryEditModal({ open, onOpenChange, categoryId }: Props) {
                   type="color"
                   name="color"
                   value={'#000000'}
+                  onChange={handleChange}
+                  className="h-10 w-full rounded cursor-pointer"
+                />
+
+                <Label>Sort</Label>
+                <input
+                  type="number"
+                  name="sort"
+                  value={values.sort}
                   onChange={handleChange}
                   className="h-10 w-full rounded cursor-pointer"
                 />

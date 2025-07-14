@@ -30,6 +30,7 @@ export function CategoryCreateModal({
 }: Props) {
   const initialValues: CreateCategoryRequest = {
     name: '',
+    sort: 1,
     description: '',
     parentCategoryId: '',
     culture: parentCategoryCulture ?? 'tr',
@@ -64,7 +65,10 @@ export function CategoryCreateModal({
             initialValues={initialValues}
             onSubmit={async (values, { setSubmitting }) => {
               setSubmitting(false)
-              var res = await createCategory(values).unwrap()
+              var res = await createCategory({
+                ...values,
+                sort: Number(values.sort),
+              }).unwrap()
               if (res.error) {
                 toast.error('Category cannot added')
                 return
@@ -289,6 +293,15 @@ export function CategoryCreateModal({
                   className="w-full h-10 rounded cursor-pointer"
                   name="color"
                   value={values.color}
+                  onChange={handleChange}
+                />
+
+                <Label>Sort</Label>
+                <input
+                  type="number"
+                  className="w-full h-10 rounded cursor-pointer"
+                  name="sort"
+                  value={values.sort}
                   onChange={handleChange}
                 />
 

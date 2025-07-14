@@ -84,6 +84,7 @@ export default function PromotionCodeScreen() {
   const columns: ColumnDef<PromotionCode>[] = [
     { accessorKey: 'code', header: 'Code' },
     { accessorKey: 'extraTime', header: 'Extra Time' },
+    { accessorKey: 'alreadyUsed', header: 'Already Used' },
     {
       id: 'actions',
       header: '',

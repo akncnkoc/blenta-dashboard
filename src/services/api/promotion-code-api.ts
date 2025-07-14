@@ -5,6 +5,7 @@ export type PromotionCode = {
   id: string
   code: string
   extraTime: string
+  alreadyUsed: boolean
 }
 
 export const promotionCodeApi = createApi({

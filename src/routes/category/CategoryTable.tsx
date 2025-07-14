@@ -50,6 +50,7 @@ export function CategoryTable({
     { accessorKey: 'isPremiumCat', header: 'Is Premium Category' },
     { accessorKey: 'isRefCat', header: 'Is Reference Category' },
     { accessorKey: 'questionCount', header: 'Question Count' },
+    { accessorKey: 'sort', header: 'Sort' },
     {
       id: 'actions',
       header: '',

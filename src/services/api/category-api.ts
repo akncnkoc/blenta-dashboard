@@ -4,6 +4,7 @@ import { baseQueryConfigWithReAuth } from './baseQueryConfig'
 export type Category = {
   id: string
   name: string
+  sort: number
   description: string
   color: string
   culture: string
@@ -15,6 +16,7 @@ export type Category = {
 export type CreateCategoryRequest = {
   name: string
   description: string
+  sort: number
   parentCategoryId: string | null
   culture: string
   color: string
@@ -26,6 +28,7 @@ export type CreateCategoryRequest = {
 export type UpdateCategoryRequest = {
   id: string
   name: string
+  sort: number
   description: string
   parentCategoryId: string | null
   culture: string
