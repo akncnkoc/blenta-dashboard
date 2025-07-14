@@ -81,7 +81,7 @@ export default function CategoryQuestionsPage() {
     state: {
       pagination: {
         pageIndex: page - 1,
-        pageSize: 1, // You can change this
+        pageSize: 10, // You can change this
       },
     },
     onPaginationChange: (updater) => {
