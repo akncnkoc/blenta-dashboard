@@ -78,6 +78,19 @@ export default function CategoryQuestionsPage() {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      pagination: {
+        pageIndex: page - 1,
+        pageSize: 1, // You can change this
+      },
+    },
+    onPaginationChange: (updater) => {
+      const newState =
+        typeof updater === 'function'
+          ? updater(table.getState().pagination)
+          : updater
+      setPage(newState.pageIndex + 1)
+    },
   })
 
   useEffect(() => {
@@ -174,6 +187,42 @@ export default function CategoryQuestionsPage() {
             )}
           </tbody>
         </table>
+        <div className="mt-4 flex justify-between items-center">
+          <div className="text-sm text-gray-600">
+            Page {table.getState().pagination.pageIndex + 1} of{' '}
+            {table.getPageCount()}
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            >
+              {'<<'}
+            </button>
+            <button
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+            <button
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            >
+              {'>>'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
