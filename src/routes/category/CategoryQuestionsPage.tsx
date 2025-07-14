@@ -19,7 +19,7 @@ import { CategoryQuestionUpdateModal } from './CategoryQuestionUpdateModal'
 export default function CategoryQuestionsPage() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const size = 10
+  const size = 1
   const [totalCount, setTotalCount] = useState(0)
 
   const [isCreateModalOpen, setCreateModalOpen] = useState(false)
@@ -41,14 +41,16 @@ export default function CategoryQuestionsPage() {
 
   useEffect(() => {
     if (!params.id) return
-    getAllQuestions({ categoryId: params.id, page, size, search }).then(
-      (res) => {
-        setQuestions(
-          Array.isArray(res?.data?.questions) ? res.data.questions : [],
-        )
-        setTotalCount(res?.data?.totalCount ?? 0) // Your API should return this
-      },
-    )
+    getAllQuestions({
+      categoryId: params.id,
+      page: page.toString(),
+      limit: size.toString(),
+    }).then((res) => {
+      setQuestions(
+        Array.isArray(res?.data?.questions) ? res.data.questions : [],
+      )
+      setTotalCount(res?.data?.total ?? 0) // Your API should return this
+    })
   }, [
     search,
     page,

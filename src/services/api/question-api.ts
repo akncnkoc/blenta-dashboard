@@ -29,7 +29,10 @@ export const questionApi = createApi({
     getAllQuestionFromCategory: builder.query<
       {
         questions: Question[]
-        meta: { total: number; page: string; size: string; pageCount: string }
+        total: number
+        page: string
+        size: string
+        pageCount: string
       },
       { page?: string; limit?: string; categoryId: string }
     >({
