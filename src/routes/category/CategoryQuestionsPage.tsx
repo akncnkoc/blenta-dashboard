@@ -19,6 +19,9 @@ import { CategoryQuestionUpdateModal } from './CategoryQuestionUpdateModal'
 export default function CategoryQuestionsPage() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
+  const size = 10
+  const [totalCount, setTotalCount] = useState(0)
+
   const [isCreateModalOpen, setCreateModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [editModalOpen, setEditModalOpen] = useState(false)
@@ -38,19 +41,24 @@ export default function CategoryQuestionsPage() {
 
   useEffect(() => {
     if (!params.id) return
-    getAllQuestions({ categoryId: params.id }).then((res) => {
-      setQuestions(
-        Array.isArray(res?.data?.questions) ? res.data.questions : [],
-      )
-    })
+    getAllQuestions({ categoryId: params.id, page, size, search }).then(
+      (res) => {
+        setQuestions(
+          Array.isArray(res?.data?.questions) ? res.data.questions : [],
+        )
+        setTotalCount(res?.data?.totalCount ?? 0) // Your API should return this
+      },
+    )
   }, [
     search,
     page,
+    size,
     params.id,
     isCreateModalOpen,
     editModalOpen,
     deleteModalOpen,
   ])
+
   const columns: ColumnDef<Question>[] = [
     { accessorKey: 'title', header: 'Title' },
     { accessorKey: 'description', header: 'Description' },
@@ -76,20 +84,22 @@ export default function CategoryQuestionsPage() {
   const table = useReactTable({
     data: questions || [],
     columns,
+    pageCount: Math.ceil(totalCount / size),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: true,
     state: {
       pagination: {
         pageIndex: page - 1,
-        pageSize: 10, // You can change this
+        pageSize: size,
       },
     },
     onPaginationChange: (updater) => {
-      const newState =
+      const next =
         typeof updater === 'function'
-          ? updater(table.getState().pagination)
-          : updater
-      setPage(newState.pageIndex + 1)
+          ? updater({ pageIndex: page - 1, pageSize: size }).pageIndex
+          : updater.pageIndex
+      setPage(next + 1)
     },
   })
 
@@ -187,41 +197,43 @@ export default function CategoryQuestionsPage() {
             )}
           </tbody>
         </table>
-        <div className="mt-4 flex justify-between items-center">
-          <div className="text-sm text-gray-600">
-            Page {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount()}
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              {'<<'}
-            </button>
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              Next
-            </button>
-            <button
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              {'>>'}
-            </button>
-          </div>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="mt-4 flex justify-between items-center">
+        <div className="text-sm text-gray-600">
+          Page {table.getState().pagination.pageIndex + 1} of{' '}
+          {table.getPageCount()}
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            {'<<'}
+          </button>
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+          <button
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            {'>>'}
+          </button>
         </div>
       </div>
     </div>
