@@ -5,6 +5,11 @@ export type Tag = {
   id: string
   name: string
 }
+export type CategoryTag = {
+  id: string
+  name: string
+  categoryTagId: string
+}
 
 export const tagApi = createApi({
   reducerPath: 'tag',
@@ -24,8 +29,7 @@ export const tagApi = createApi({
     }),
     getAllCategoryTags: builder.query<
       {
-        data: Tag[]
-        meta: { total: number; page: string; size: string; pageCount: string }
+        tags: CategoryTag[]
       },
       { categoryId: string }
     >({
@@ -59,6 +63,12 @@ export const tagApi = createApi({
         },
       }),
     }),
+    deleteCategoryTag: builder.mutation<void, { categoryTagId: string }>({
+      query: (body) => ({
+        url: '/tag/categoryTag/' + body.categoryTagId,
+        method: 'DELETE',
+      }),
+    }),
     deleteTag: builder.mutation<void, string>({
       query: (id) => ({
         url: `/tag/${id}`,
@@ -75,4 +85,5 @@ export const {
   useCreateTagMutation,
   useAddCategoryTagMutation,
   useLazyGetAllCategoryTagsQuery,
+  useDeleteCategoryTagMutation,
 } = tagApi
