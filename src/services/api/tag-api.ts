@@ -52,8 +52,8 @@ export const tagApi = createApi({
       { categoryId: string; tagId: string }
     >({
       query: (body) => ({
-        url: '/category' + body.categoryId,
-        method: 'POST',
+        url: '/category/' + body.categoryId + '/addTag',
+        method: 'PUT',
         body: {
           tagId: body.tagId,
         },
