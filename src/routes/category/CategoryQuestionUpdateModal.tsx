@@ -41,7 +41,6 @@ export function CategoryQuestionUpdateModal({
               title: question.title,
               categoryId: question.categoryId,
               description: question.description,
-              culture: question.culture,
               sort: question.sort,
             }}
             enableReinitialize
@@ -86,23 +85,8 @@ export function CategoryQuestionUpdateModal({
                     type="text"
                     value={values.description}
                     onChange={handleChange}
-                    required
                     className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                </div>
-
-                <div>
-                  <Label htmlFor="culture">Culture</Label>
-                  <select
-                    id="culture"
-                    name="culture"
-                    value={values.culture}
-                    onChange={handleChange}
-                    className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="tr">TR</option>
-                    <option value="en">EN</option>
-                  </select>
                 </div>
 
                 <div>
