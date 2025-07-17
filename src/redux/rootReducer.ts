@@ -5,6 +5,7 @@ import { categoryApi } from '../services/api/category-api'
 import { tagApi } from '@/services/api/tag-api'
 import { questionApi } from '@/services/api/question-api'
 import { promotionCodeApi } from '@/services/api/promotion-code-api'
+import { appVersionApi } from '@/services/api/app-version-api'
 
 export const rootReducer = combineReducers({
   userSlice,
@@ -13,4 +14,5 @@ export const rootReducer = combineReducers({
   [tagApi.reducerPath]: tagApi.reducer,
   [questionApi.reducerPath]: questionApi.reducer,
   [promotionCodeApi.reducerPath]: promotionCodeApi.reducer,
+  [appVersionApi.reducerPath]: appVersionApi.reducer,
 })

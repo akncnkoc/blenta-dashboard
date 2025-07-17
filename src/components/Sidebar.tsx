@@ -37,6 +37,12 @@ export default function Sidebar() {
         >
           Promotion Code
         </Link>
+        <Link
+          to="/app-version"
+          className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded transition"
+        >
+          App Version
+        </Link>
 
         <button
           onClick={logout}
