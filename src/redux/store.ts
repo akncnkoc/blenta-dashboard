@@ -9,6 +9,8 @@ import { tagApi } from '@/services/api/tag-api'
 import { questionApi } from '@/services/api/question-api'
 import { promotionCodeApi } from '@/services/api/promotion-code-api'
 import { appVersionApi } from '@/services/api/app-version-api'
+import { eventTagApi } from '@/services/api/event-tag-api'
+import { eventApi } from '@/services/api/event-api'
 
 const persistConfig = {
   key: 'root',
@@ -35,6 +37,8 @@ const store = configureStore({
       .concat(tagApi.middleware)
       .concat(promotionCodeApi.middleware)
       .concat(appVersionApi.middleware)
+      .concat(eventTagApi.middleware)
+      .concat(eventApi.middleware)
       .concat(questionApi.middleware),
 })
 

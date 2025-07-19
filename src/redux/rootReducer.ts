@@ -6,6 +6,8 @@ import { tagApi } from '@/services/api/tag-api'
 import { questionApi } from '@/services/api/question-api'
 import { promotionCodeApi } from '@/services/api/promotion-code-api'
 import { appVersionApi } from '@/services/api/app-version-api'
+import { eventTagApi } from '@/services/api/event-tag-api'
+import { eventApi } from '@/services/api/event-api'
 
 export const rootReducer = combineReducers({
   userSlice,
@@ -15,4 +17,6 @@ export const rootReducer = combineReducers({
   [questionApi.reducerPath]: questionApi.reducer,
   [promotionCodeApi.reducerPath]: promotionCodeApi.reducer,
   [appVersionApi.reducerPath]: appVersionApi.reducer,
+  [eventApi.reducerPath]: eventApi.reducer,
+  [eventTagApi.reducerPath]: eventTagApi.reducer,
 })

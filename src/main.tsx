@@ -23,6 +23,8 @@ import CategoryQuestionsPage from './routes/category/CategoryQuestionsPage'
 import ChildCategoriesPage from './routes/category/ChildCategorisPage'
 import PromotionCodeScreen from './routes/promotion-code'
 import AppVersionScreen from './routes/app-version'
+import EventTagScreen from './routes/event-tag/event-tag'
+import EventScreen from './routes/event/event'
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -107,6 +109,32 @@ const tagRoute = createRoute({
     </ProtectedRoute>
   ),
 })
+
+const eventTagRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/event-tag',
+  component: () => (
+    <ProtectedRoute>
+      <div className="flex">
+        <Sidebar />
+        <EventTagScreen />
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
+const eventRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/event',
+  component: () => (
+    <ProtectedRoute>
+      <div className="flex">
+        <Sidebar />
+        <EventScreen />
+      </div>
+    </ProtectedRoute>
+  ),
+})
 const promotionCodeRoutes = createRoute({
   getParentRoute: () => rootRoute,
   path: '/promotion-code',
@@ -148,6 +176,8 @@ const routeTree = rootRoute.addChildren([
   promotionCodeRoutes,
   appVersionRoute,
   loginRoute,
+  eventRoute,
+  eventTagRoute,
 ])
 
 const router = createRouter({

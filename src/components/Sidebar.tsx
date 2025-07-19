@@ -32,6 +32,18 @@ export default function Sidebar() {
           Tag
         </Link>
         <Link
+          to="/event"
+          className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded transition"
+        >
+          Event
+        </Link>
+        <Link
+          to="/event-tag"
+          className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded transition"
+        >
+          Event Tag
+        </Link>
+        <Link
           to="/promotion-code"
           className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded transition"
         >
