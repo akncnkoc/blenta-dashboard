@@ -1,41 +1,40 @@
 import { useState, useEffect } from 'react'
-import { EventTagDeleteModal } from './EventTagDeleteModal'
-import {
-  EventTag,
-  useLazyGetAllEventTagsQuery,
-} from '@/services/api/event-tag-api'
-import { EventTagSearchBar } from './EventTagSearchBar'
-import { EventTagTable } from './EventTagTable'
-import { EventTagEditModal } from './EvenTagEditModal'
-import { EventTagCreateModal } from './EventTagCreateModal'
-import { EventTagPagination } from './EventTagPagination'
+import { EventQuestionPagination } from './EventQuestionPagination'
+import { EventQuestionTable } from './EventQuestionTable'
+import { EventQuestion } from '@/services/api/event-api'
+import { EventQuestionSearchBar } from './EventQuestionSearchBar'
+import { useLazyGetAllEventQuestionsQuery } from '@/services/api/event-question-api'
+import { EventQuestionCreateModal } from './EventQuestionCreateModal'
+import { EventQuestionEditModal } from './EventQuestionEditModal'
+import { EventQuestionDeleteModal } from './EventQuestionDeleteModal'
 
-export default function EventTagScreen() {
+export default function EventQuestionScreen() {
   const [search, setSearch] = useState('')
   const [lang, setLang] = useState<'en' | 'tr'>('tr')
   const [page, setPage] = useState(1)
   const size = 10
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
-  const [editedEventTagId, setEditedEventTagId] = useState('')
+  const [editedEventQuestionId, setEditedEventQuestionId] = useState('')
   const [deleteOpen, setDeleteOpen] = useState(false)
-  const [eventTagToDelete, setEventTagToDelete] = useState<{
+  const [eventQuestionToDelete, setEventQuestionDelete] = useState<{
     id: string
-    name: string
+    text: string
   } | null>(null)
-  const [getAllEventTags, { isLoading }] = useLazyGetAllEventTagsQuery()
-  const [eventTags, setEventTags] = useState<EventTag[]>([])
+  const [getAllEventQuestions, { isLoading }] =
+    useLazyGetAllEventQuestionsQuery()
+  const [events, setEvents] = useState<EventQuestion[]>([])
   const [totalCount, setTotalCount] = useState(0)
 
   useEffect(() => {
-    getAllEventTags({
+    getAllEventQuestions({
       search: search || undefined,
       page: String(page),
       size: String(size),
       lang,
     }).then((res) => {
       if (res?.data) {
-        setEventTags(res.data.data)
+        setEvents(res.data.data)
         setTotalCount(res.data.meta.total)
       }
     })
@@ -44,7 +43,7 @@ export default function EventTagScreen() {
   return (
     <div className="p-4 w-full">
       <div className="flex justify-between items-center mb-4">
-        <EventTagSearchBar
+        <EventQuestionSearchBar
           search={search}
           lang={lang}
           onSearchChange={(val) => {
@@ -57,53 +56,56 @@ export default function EventTagScreen() {
           onClick={() => setCreateOpen(true)}
           className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
-          + Add Event Tag
+          + Add Event Question
         </button>
       </div>
 
-      <EventTagTable
-        data={eventTags}
+      <EventQuestionTable
+        data={events}
         totalCount={totalCount}
         page={page}
         size={size}
         isLoading={isLoading}
         onPageChange={setPage}
         onEdit={(cat) => {
-          setEditedEventTagId(cat.id)
+          setEditedEventQuestionId(cat.id)
           setEditOpen(true)
         }}
-        onDelete={(id: string, name: string) => {
-          setEventTagToDelete({ id, name })
+        onDelete={(id: string, text: string) => {
+          setEventQuestionDelete({ id, text })
           setDeleteOpen(true)
         }}
       />
 
-      <EventTagPagination
+      <EventQuestionPagination
         page={page}
         size={size}
         total={totalCount}
         onPageChange={setPage}
       />
 
-      <EventTagCreateModal open={createOpen} onOpenChange={setCreateOpen} />
+      <EventQuestionCreateModal
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+      />
 
-      <EventTagEditModal
+      <EventQuestionEditModal
         open={editOpen}
         onOpenChange={(open) => {
           setEditOpen(open)
-          if (!open) setEditedEventTagId('')
+          if (!open) setEditedEventQuestionId('')
         }}
-        eventTagId={editedEventTagId}
+        eventQuestionId={editedEventQuestionId}
       />
-      {eventTagToDelete && (
-        <EventTagDeleteModal
+      {eventQuestionToDelete && (
+        <EventQuestionDeleteModal
           open={deleteOpen}
           onOpenChange={(open) => {
             setDeleteOpen(open)
-            if (!open) setEventTagToDelete(null)
+            if (!open) setEventQuestionDelete(null)
           }}
-          eventTagId={eventTagToDelete.id}
-          eventTagName={eventTagToDelete.name}
+          eventQuestionId={eventQuestionToDelete.id}
+          eventQuestionText={eventQuestionToDelete.text}
         />
       )}
     </div>

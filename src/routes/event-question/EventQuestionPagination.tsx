@@ -5,7 +5,12 @@ interface Props {
   onPageChange: (page: number) => void
 }
 
-export function EventTagPagination({ page, total, size, onPageChange }: Props) {
+export function EventQuestionPagination({
+  page,
+  total,
+  size,
+  onPageChange,
+}: Props) {
   const pageCount = Math.ceil(total / size)
 
   return (

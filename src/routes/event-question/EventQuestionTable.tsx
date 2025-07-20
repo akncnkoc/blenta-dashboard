@@ -5,21 +5,21 @@ import {
   flexRender,
   ColumnDef,
 } from '@tanstack/react-table'
-import { EventTagActionsMenu } from './EventTagActionsMenu'
-import { EventTag } from '@/services/api/event-tag-api'
+import { EventQuestion } from '@/services/api/event-api'
+import { EventQuestionActionsMenu } from './EventQuestionActionsMenu'
 
 interface Props {
-  data: EventTag[]
+  data: EventQuestion[]
   totalCount: number
   page: number
   size: number
   isLoading: boolean
   onPageChange: (page: number) => void
-  onEdit: (cat: EventTag) => void
+  onEdit: (event: EventQuestion) => void
   onDelete: (id: string, name: string) => void
 }
 
-export function EventTagTable({
+export function EventQuestionTable({
   data,
   totalCount,
   page,
@@ -29,16 +29,14 @@ export function EventTagTable({
   onEdit,
   onDelete,
 }: Props) {
-  const columns: ColumnDef<EventTag>[] = [
-    { accessorKey: 'name', header: 'Name' },
-    { accessorKey: 'culture', header: 'Culture' },
-    { accessorKey: 'question', header: 'Question' },
+  const columns: ColumnDef<EventQuestion>[] = [
+    { accessorKey: 'text', header: 'Name' },
     {
       id: 'actions',
       header: '',
       cell: ({ row }) => (
-        <EventTagActionsMenu
-          eventTag={row.original}
+        <EventQuestionActionsMenu
+          eventQuestion={row.original}
           onEdit={onEdit}
           onDelete={onDelete}
         />

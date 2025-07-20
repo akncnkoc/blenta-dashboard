@@ -9,10 +9,10 @@ import {
 import { Formik } from 'formik'
 import { Label } from '@radix-ui/react-label'
 import { toast } from 'sonner'
-import { useLazyGetAllEventTagsQuery } from '@/services/api/event-tag-api'
 import { useCreateEventMutation } from '@/services/api/event-api'
 import { useEffect, useState } from 'react'
-import { EventTagMultiSelect } from './components/EventTagMultiSelect'
+import { EventQuestionAnswerMultiSelect } from './components/EventQuestionAnswerMultiSelect'
+import { useLazyGetAllAnswersQuery } from '@/services/api/event-question-answer-api'
 
 interface Props {
   open: boolean
@@ -20,24 +20,26 @@ interface Props {
 }
 
 export function EventCreateModal({ open, onOpenChange }: Props) {
-  const [getAllEventTags, { data: eventTags }] = useLazyGetAllEventTagsQuery()
+  const [getAllQuestionAnswers] = useLazyGetAllAnswersQuery()
   const [createEvent] = useCreateEventMutation()
 
   const [lang, setLang] = useState('tr')
 
   const initialValues: {
-    name: string
+    name: string | null
     culture: string
-    tagIds: Array<string>
+    description: string
+    answerIds: Array<string>
   } = {
     name: '',
     culture: lang,
-    tagIds: [],
+    description: '',
+    answerIds: [],
   }
 
   useEffect(() => {
     if (open) {
-      getAllEventTags({ lang, page: '1', size: '100' })
+      getAllQuestionAnswers({ page: '1', size: '100' })
     }
   }, [open, lang])
 
@@ -133,12 +135,23 @@ export function EventCreateModal({ open, onOpenChange }: Props) {
                   className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Name"
                   name="name"
-                  value={values.name}
+                  value={values.name ?? ''}
                   onChange={handleChange}
                   required
                 />
-                <Label>Event Tags</Label>
-                <EventTagMultiSelect lang={lang} />
+
+                {/* Name Input */}
+                <Label>Description</Label>
+                <input
+                  className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Description"
+                  name="description"
+                  value={values.description ?? ''}
+                  onChange={handleChange}
+                  required
+                />
+                <Label>Answers</Label>
+                <EventQuestionAnswerMultiSelect />
 
                 {/* Buttons */}
                 <div className="mt-4 flex justify-end gap-2 col-span-2">

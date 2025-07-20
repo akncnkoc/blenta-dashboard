@@ -31,6 +31,7 @@ export function EventTable({
 }: Props) {
   const columns: ColumnDef<Event>[] = [
     { accessorKey: 'name', header: 'Name' },
+    { accessorKey: 'description', header: 'Description' },
     { accessorKey: 'culture', header: 'Culture' },
     {
       id: 'actions',

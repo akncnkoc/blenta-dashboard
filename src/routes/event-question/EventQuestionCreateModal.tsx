@@ -9,45 +9,51 @@ import {
 import { Formik } from 'formik'
 import { Label } from '@radix-ui/react-label'
 import { toast } from 'sonner'
-import { useCreateEventTagMutation } from '@/services/api/event-tag-api'
+import { useState } from 'react'
+import { useCreateEventQuestionMutation } from '@/services/api/event-question-api'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function EventTagCreateModal({ open, onOpenChange }: Props) {
-  const initialValues = {
-    name: '',
-    culture: 'tr',
-    question: '',
+export function EventQuestionCreateModal({ open, onOpenChange }: Props) {
+  const [createEventQuestion] = useCreateEventQuestionMutation()
+
+  const [lang, setLang] = useState('tr')
+
+  const initialValues: {
+    text: string
+    culture: string
+    answers: Array<string>
+  } = {
+    text: '',
+    culture: lang,
+    answers: [],
   }
-  const [createEventTag] = useCreateEventTagMutation()
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-sm" />
-        <Dialog.Content className="fixed top-[50%] left-[50%] w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-6 shadow-lg focus:outline-none">
+        <Dialog.Content className="fixed top-[50%] left-[50%] w-full max-w-5xl translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-6 shadow-lg focus:outline-none">
           <Dialog.Title className="text-lg font-semibold mb-2">
-            Create Event Tag
+            Create Event Question
           </Dialog.Title>
           <Dialog.Description className="text-sm text-gray-500 mb-4">
-            Add a new event tag
+            Add a new event question
           </Dialog.Description>
 
           <Formik
             initialValues={initialValues}
             onSubmit={async (values, { setSubmitting }) => {
               setSubmitting(false)
-              var res = await createEventTag({
-                ...values,
-              })
+              const res = await createEventQuestion(values)
               if (res.error) {
-                toast.error('Event tag cannot added')
+                toast.error('Event question not added')
                 return
               }
-              toast.success('Event Tag added')
+              toast.success('Event question created')
               onOpenChange(false)
             }}
           >
@@ -62,12 +68,13 @@ export function EventTagCreateModal({ open, onOpenChange }: Props) {
                 className="grid grid-rows-2 grid-cols-2 space-y-4 text-sm"
                 onSubmit={handleSubmit}
               >
-                {/* Culture (Radix Select) */}
+                {/* Culture Select */}
                 <Label>Culture</Label>
                 <Select.Root
                   value={values.culture}
                   onValueChange={(value) => {
                     setFieldValue('culture', value)
+                    setLang(value)
                   }}
                 >
                   <Select.Trigger
@@ -79,13 +86,11 @@ export function EventTagCreateModal({ open, onOpenChange }: Props) {
                       <ChevronDownIcon />
                     </Select.Icon>
                   </Select.Trigger>
-
                   <Select.Portal>
                     <Select.Content className="overflow-hidden rounded-md border border-gray-300 bg-white shadow-md">
                       <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 cursor-default">
                         <ChevronUpIcon />
                       </Select.ScrollUpButton>
-
                       <Select.Viewport className="p-1">
                         <Select.Item
                           value="tr"
@@ -96,7 +101,6 @@ export function EventTagCreateModal({ open, onOpenChange }: Props) {
                             <CheckIcon />
                           </Select.ItemIndicator>
                         </Select.Item>
-
                         <Select.Item
                           value="en"
                           className="relative flex items-center px-8 py-2 rounded-md text-sm cursor-pointer select-none data-[highlighted]:bg-blue-600 data-[highlighted]:text-white"
@@ -107,7 +111,6 @@ export function EventTagCreateModal({ open, onOpenChange }: Props) {
                           </Select.ItemIndicator>
                         </Select.Item>
                       </Select.Viewport>
-
                       <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 cursor-default">
                         <ChevronDownIcon />
                       </Select.ScrollDownButton>
@@ -115,27 +118,63 @@ export function EventTagCreateModal({ open, onOpenChange }: Props) {
                   </Select.Portal>
                 </Select.Root>
 
-                <Label>Name</Label>
-                <input
-                  className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Name"
-                  name="name"
-                  value={values.name}
-                  onChange={handleChange}
-                  required
-                />
+                {/* Name Input */}
                 <Label>Question</Label>
                 <input
                   className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Question"
-                  name="question"
-                  value={values.question}
+                  name="text"
+                  value={values.text}
                   onChange={handleChange}
                   required
                 />
 
+                <Label>Answers</Label>
+                {/* Repeatable Answers Input */}
+                <div>
+                  <div className="flex flex-col space-y-2 max-h-48 overflow-auto">
+                    {values.answers.map((answer, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          className="flex-grow border px-3 py-2 rounded focus:outline-none"
+                          placeholder={`Answer ${index + 1}`}
+                          value={answer}
+                          onChange={(e) => {
+                            const updated = [...values.answers]
+                            updated[index] = e.target.value
+                            setFieldValue('answers', updated)
+                          }}
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...values.answers]
+                            updated.splice(index, 1)
+                            setFieldValue('answers', updated)
+                          }}
+                          className="text-red-600 hover:text-red-800 px-2 py-1 rounded"
+                          aria-label={`Remove answer ${index + 1}`}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFieldValue('answers', [...values.answers, ''])
+                    }
+                    className="mt-2 px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 text-sm"
+                  >
+                    + Add Answer
+                  </button>
+                </div>
+
                 {/* Buttons */}
-                <div className="mt-4 flex justify-end gap-2">
+                <div className="mt-4 flex justify-end gap-2 col-span-2">
                   <button
                     type="button"
                     onClick={() => onOpenChange(false)}

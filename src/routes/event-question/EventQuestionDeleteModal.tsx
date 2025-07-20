@@ -1,24 +1,24 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { Cross2Icon } from '@radix-ui/react-icons'
-import { useDeleteEventTagMutation } from '@/services/api/event-tag-api'
+import { useDeleteEventQuestionMutation } from '@/services/api/event-question-api'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  eventTagId: string
-  eventTagName: string
+  eventQuestionId: string
+  eventQuestionText: string
 }
 
-export function EventTagDeleteModal({
+export function EventQuestionDeleteModal({
   open,
   onOpenChange,
-  eventTagId,
-  eventTagName,
+  eventQuestionId,
+  eventQuestionText,
 }: Props) {
-  const [deleteEventTag, { isLoading }] = useDeleteEventTagMutation()
+  const [deleteEventQuestion, { isLoading }] = useDeleteEventQuestionMutation()
 
   const handleDelete = async () => {
-    await deleteEventTag(eventTagId)
+    await deleteEventQuestion(eventQuestionId)
     onOpenChange(false)
   }
 
@@ -28,11 +28,14 @@ export function EventTagDeleteModal({
         <Dialog.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-sm" />
         <Dialog.Content className="z-50 fixed top-[50%] left-[50%] w-full max-w-md translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-6 shadow-lg focus:outline-none">
           <Dialog.Title className="text-lg font-semibold mb-2">
-            Delete Event Tag
+            Delete Event
           </Dialog.Title>
           <Dialog.Description className="text-sm text-gray-500 mb-6">
             Are you sure you want to delete{' '}
-            <span className="font-semibold text-red-600">{eventTagName}</span>?
+            <span className="font-semibold text-red-600">
+              {eventQuestionText}
+            </span>
+            ?
             <br />
             This action cannot be undone.
           </Dialog.Description>

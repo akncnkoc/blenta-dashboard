@@ -4,8 +4,31 @@ import { baseQueryConfigWithReAuth } from './baseQueryConfig'
 export type Event = {
   id: string
   name: string
+  description: string | null
   culture: string
-  tagIds: Array<string>
+  matches: Array<EventMatch>
+}
+export type EventQuestion = {
+  id: string
+  text: string
+  culture: string
+  createdAt: string
+  answers: EventQuestionAnswer[]
+}
+
+export type EventQuestionAnswer = {
+  id: string
+  text: string
+  questionId: string
+  question: EventQuestion
+  matches: EventMatch[]
+}
+export type EventMatch = {
+  id: string
+  eventId: string
+  answerId: string
+  event: Event
+  answer: EventQuestionAnswer
 }
 
 export const eventApi = createApi({
@@ -32,7 +55,12 @@ export const eventApi = createApi({
     }),
     createEvent: builder.mutation<
       void,
-      { name: string; culture: string; tagIds: Array<string> }
+      {
+        name: string | null
+        culture: string
+        answerIds: Array<string>
+        description: string | null
+      }
     >({
       query: (body) => ({
         url: '/event',
@@ -42,12 +70,18 @@ export const eventApi = createApi({
     }),
     updateEvent: builder.mutation<
       void,
-      { id: string; name: string; culture: string; tagIds: Array<string> }
+      {
+        id: string
+        name: string | null
+        culture: string
+        answerIds: Array<string>
+        description: string | null
+      }
     >({
-      query: ({ id, name, culture, tagIds }) => ({
+      query: ({ id, name, culture, answerIds, description }) => ({
         url: `/event/${id}`,
         method: 'PUT',
-        body: { name, culture, tagIds },
+        body: { name, culture, answerIds, description },
       }),
     }),
     deleteEvent: builder.mutation<void, string>({

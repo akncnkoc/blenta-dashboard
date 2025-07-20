@@ -1,14 +1,18 @@
+import { EventQuestion } from '@/services/api/event-api'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
-import { EventTag } from '@/services/api/event-tag-api'
 
 interface Props {
-  eventTag: EventTag
-  onEdit: (cat: EventTag) => void
-  onDelete: (id: string, name: string) => void
+  eventQuestion: EventQuestion
+  onEdit: (event: EventQuestion) => void
+  onDelete: (id: string, text: string) => void
 }
 
-export function EventTagActionsMenu({ eventTag, onEdit, onDelete }: Props) {
+export function EventQuestionActionsMenu({
+  eventQuestion,
+  onEdit,
+  onDelete,
+}: Props) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -24,13 +28,13 @@ export function EventTagActionsMenu({ eventTag, onEdit, onDelete }: Props) {
           align="end"
         >
           <DropdownMenu.Item
-            onSelect={() => onEdit(eventTag)}
+            onSelect={() => onEdit(eventQuestion)}
             className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
           >
             Edit
           </DropdownMenu.Item>
           <DropdownMenu.Item
-            onSelect={() => onDelete(eventTag.id, eventTag.name)}
+            onSelect={() => onDelete(eventQuestion.id, eventQuestion.text)}
             className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
           >
             Delete

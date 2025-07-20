@@ -3,46 +3,49 @@ import * as Popover from '@radix-ui/react-popover'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import { CheckIcon } from 'lucide-react'
 import { useFormikContext } from 'formik'
+import { useLazyGetAllAnswersQuery } from '@/services/api/event-question-answer-api'
+import type { EventQuestionAnswer } from '@/services/api/event-api'
 
-import {
-  useLazyGetAllEventTagsQuery,
-  type EventTag,
-} from '@/services/api/event-tag-api'
-
-export function EventTagMultiSelect({ lang }: { lang: string }) {
+export function EventQuestionAnswerMultiSelect({
+  questionId,
+}: {
+  questionId?: string
+}) {
   const { values, setFieldValue } = useFormikContext<any>()
   const [open, setOpen] = useState(false)
-  const [search, setSearch] = useState('')
-  const [eventTags, setEventTags] = useState<EventTag[]>([])
+  const [answers, setAnswers] = useState<EventQuestionAnswer[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(1)
+  const size = 10
   const listRef = useRef<HTMLDivElement | null>(null)
 
-  const [trigger, result] = useLazyGetAllEventTagsQuery()
+  const [trigger, result] = useLazyGetAllAnswersQuery()
 
-  const fetchTags = async (pageNumber = 1, searchText = '') => {
-    const { data } = await trigger({
+  const fetchAnswers = async (pageNumber = 1) => {
+    const res = await trigger({
       page: String(pageNumber),
-      size: String(10),
-      search: searchText,
-      lang,
+      size: String(size),
+      questionId,
     }).unwrap()
 
+    const newAnswers = res.data
+    const total = res.meta.total
+
     if (pageNumber === 1) {
-      setEventTags(data)
+      setAnswers(newAnswers)
     } else {
-      setEventTags((prev) => [...prev, ...data])
+      setAnswers((prev) => [...prev, ...newAnswers])
     }
 
-    setHasMore(data.length >= 10)
+    setHasMore(pageNumber * size < total)
   }
 
   useEffect(() => {
     if (open) {
       setPage(1)
-      fetchTags(1, search)
+      fetchAnswers(1)
     }
-  }, [open, search])
+  }, [open, questionId])
 
   const onScroll = () => {
     if (!listRef.current || result.isFetching || !hasMore) return
@@ -51,9 +54,10 @@ export function EventTagMultiSelect({ lang }: { lang: string }) {
     if (scrollTop + clientHeight >= scrollHeight - 50) {
       const nextPage = page + 1
       setPage(nextPage)
-      fetchTags(nextPage, search)
+      fetchAnswers(nextPage)
     }
   }
+
   const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     e.currentTarget.scrollBy({ top: e.deltaY, behavior: 'smooth' })
   }
@@ -65,9 +69,9 @@ export function EventTagMultiSelect({ lang }: { lang: string }) {
           type="button"
           className="w-full border border-gray-300 px-3 py-2 rounded text-left bg-white"
         >
-          {values.tagIds?.length > 0
-            ? `${values.tagIds.length} tag(s) selected`
-            : 'Select tags'}
+          {values.answerIds?.length > 0
+            ? `${values.answerIds.length} answer(s) selected`
+            : 'Select answers'}
         </button>
       </Popover.Trigger>
 
@@ -76,17 +80,6 @@ export function EventTagMultiSelect({ lang }: { lang: string }) {
           className="z-50 bg-white p-3 rounded shadow-lg w-64"
           sideOffset={5}
         >
-          <input
-            type="text"
-            placeholder="Search tags..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value)
-              setPage(1)
-            }}
-            className="w-full px-2 py-1 border border-gray-300 rounded mb-2 text-sm"
-          />
-
           <div
             ref={listRef}
             onWheel={onWheel}
@@ -94,20 +87,22 @@ export function EventTagMultiSelect({ lang }: { lang: string }) {
             className="max-h-60 overflow-y-auto space-y-1 pr-1"
             style={{ maxHeight: 240 }}
           >
-            {eventTags.map((tag) => {
-              const checked = values.tagIds.includes(tag.id)
+            {answers.map((answer) => {
+              const checked = values.answerIds?.includes(answer.id) ?? false
               return (
                 <label
-                  key={tag.id}
+                  key={answer.id}
                   className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 rounded cursor-pointer"
                 >
                   <Checkbox.Root
                     checked={checked}
                     onCheckedChange={(c) => {
-                      const newTagIds = c
-                        ? [...values.tagIds, tag.id]
-                        : values.tagIds.filter((id: string) => id !== tag.id)
-                      setFieldValue('tagIds', newTagIds)
+                      const newAnswerIds = c
+                        ? [...(values.answerIds ?? []), answer.id]
+                        : (values.answerIds ?? []).filter(
+                            (id: string) => id !== answer.id,
+                          )
+                      setFieldValue('answerIds', newAnswerIds)
                     }}
                     className="w-4 h-4 border border-gray-300 rounded bg-white flex items-center justify-center data-[state=checked]:bg-blue-600"
                   >
@@ -115,9 +110,7 @@ export function EventTagMultiSelect({ lang }: { lang: string }) {
                       <CheckIcon className="w-3 h-3" />
                     </Checkbox.Indicator>
                   </Checkbox.Root>
-                  <span className="text-sm">
-                    {tag.name} ({tag.culture})
-                  </span>
+                  <span className="text-sm">{answer.text}</span>
                 </label>
               )
             })}
@@ -130,7 +123,7 @@ export function EventTagMultiSelect({ lang }: { lang: string }) {
 
             {!hasMore && !result.isFetching && (
               <div className="text-center text-xs text-gray-400 py-2">
-                No more tags
+                No more answers
               </div>
             )}
           </div>

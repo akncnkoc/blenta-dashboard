@@ -9,63 +9,65 @@ import {
 import { Formik } from 'formik'
 import { Label } from '@radix-ui/react-label'
 import { toast } from 'sonner'
-import {
-  useLazyGetEventQuery,
-  useUpdateEventMutation,
-} from '@/services/api/event-api'
 import { useEffect, useState } from 'react'
-import { EventQuestionAnswerMultiSelect } from './components/EventQuestionAnswerMultiSelect'
+import {
+  useLazyGetEventQuestionQuery,
+  useUpdateEventQuestionMutation,
+} from '@/services/api/event-question-api'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  eventId: string
+  eventQuestionId: string
 }
 
-export function EventEditModal({ open, onOpenChange, eventId }: Props) {
-  const [getEvent] = useLazyGetEventQuery()
-  const [updateEvent] = useUpdateEventMutation()
-
-  const [initialValues, setInitialValues] = useState<{
-    name: string | null
-    culture: string
-    description: string
-    answerIds: Array<string>
-  }>({
-    name: '',
-    culture: '',
-    description: '',
-    answerIds: [],
-  })
+export function EventQuestionEditModal({
+  open,
+  onOpenChange,
+  eventQuestionId,
+}: Props) {
+  const [getEventQuestion] = useLazyGetEventQuestionQuery()
+  const [updateEventQuestion] = useUpdateEventQuestionMutation()
 
   const [lang, setLang] = useState('tr')
+  const [initialValues, setInitialValues] = useState<{
+    text: string
+    culture: string
+    answers: Array<string>
+    id: string
+  }>({
+    text: '',
+    culture: lang,
+    answers: [],
+    id: eventQuestionId,
+  })
 
   useEffect(() => {
-    if (open) {
-      getEvent(eventId)
+    if (open && eventQuestionId) {
+      getEventQuestion(eventQuestionId)
         .unwrap()
         .then((res) => {
+          console.log(res)
           setInitialValues({
-            name: res.name ?? '',
-            culture: res.culture ?? 'tr',
-            description: res.description ?? '',
-            answerIds:
-              res.matches?.map((m: { answerId: string }) => m.answerId) ?? [],
+            culture: res.culture,
+            id: res.id,
+            text: res.text,
+            answers: res.answers.map((answer) => answer.text) ?? [],
           })
         })
     }
-  }, [open, eventId])
+  }, [open, eventQuestionId])
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-sm" />
-        <Dialog.Content className="fixed top-[50%] left-[50%] w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-6 shadow-lg focus:outline-none">
+        <Dialog.Content className="fixed top-[50%] left-[50%] w-full max-w-5xl translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-6 shadow-lg focus:outline-none">
           <Dialog.Title className="text-lg font-semibold mb-2">
-            Edit Event
+            Create Event Question
           </Dialog.Title>
           <Dialog.Description className="text-sm text-gray-500 mb-4">
-            Edit a event
+            Add a new event question
           </Dialog.Description>
 
           <Formik
@@ -73,15 +75,12 @@ export function EventEditModal({ open, onOpenChange, eventId }: Props) {
             initialValues={initialValues}
             onSubmit={async (values, { setSubmitting }) => {
               setSubmitting(false)
-              const res = await updateEvent({
-                id: eventId,
-                ...values,
-              })
+              const res = await updateEventQuestion(values)
               if (res.error) {
-                toast.error('Event cannot be updated')
+                toast.error('Event question not added')
                 return
               }
-              toast.success('Event updated')
+              toast.success('Event question created')
               onOpenChange(false)
             }}
           >
@@ -147,28 +146,60 @@ export function EventEditModal({ open, onOpenChange, eventId }: Props) {
                 </Select.Root>
 
                 {/* Name Input */}
-                <Label>Name</Label>
+                <Label>Question</Label>
                 <input
                   className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Name"
-                  name="name"
-                  value={values.name ?? ''}
+                  placeholder="Question"
+                  name="text"
+                  value={values.text}
                   onChange={handleChange}
                   required
                 />
 
-                {/* Name Input */}
-                <Label>Description</Label>
-                <input
-                  className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="cescription"
-                  name="description"
-                  value={values.description ?? ''}
-                  onChange={handleChange}
-                  required
-                />
-                <Label>Event Tags</Label>
-                <EventQuestionAnswerMultiSelect />
+                <Label>Answers</Label>
+                {/* Repeatable Answers Input */}
+                <div>
+                  <div className="flex flex-col space-y-2 max-h-48 overflow-auto">
+                    {values.answers &&
+                      values.answers?.map((answer, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            className="flex-grow border px-3 py-2 rounded focus:outline-none"
+                            placeholder={`Answer ${index + 1}`}
+                            value={answer}
+                            onChange={(e) => {
+                              const updated = [...values.answers]
+                              updated[index] = e.target.value
+                              setFieldValue('answers', updated)
+                            }}
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...values.answers]
+                              updated.splice(index, 1)
+                              setFieldValue('answers', updated)
+                            }}
+                            className="text-red-600 hover:text-red-800 px-2 py-1 rounded"
+                            aria-label={`Remove answer ${index + 1}`}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFieldValue('answers', [...values.answers, ''])
+                    }
+                    className="mt-2 px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 text-sm"
+                  >
+                    + Add Answer
+                  </button>
+                </div>
 
                 {/* Buttons */}
                 <div className="mt-4 flex justify-end gap-2 col-span-2">
@@ -185,7 +216,7 @@ export function EventEditModal({ open, onOpenChange, eventId }: Props) {
                     className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
                     disabled={isSubmitting}
                   >
-                    Update
+                    Create
                   </button>
                 </div>
               </form>

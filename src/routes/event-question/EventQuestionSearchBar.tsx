@@ -5,7 +5,7 @@ interface Props {
   onLangChange: (l: 'tr' | 'en') => void
 }
 
-export function EventTagSearchBar({
+export function EventQuestionSearchBar({
   search,
   lang,
   onSearchChange,
@@ -15,7 +15,7 @@ export function EventTagSearchBar({
     <div className="mb-4 flex gap-2 items-center">
       <input
         type="text"
-        placeholder="Search event tags..."
+        placeholder="Search events..."
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         className="border px-2 py-1 rounded w-full"

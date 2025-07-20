@@ -23,8 +23,8 @@ import CategoryQuestionsPage from './routes/category/CategoryQuestionsPage'
 import ChildCategoriesPage from './routes/category/ChildCategorisPage'
 import PromotionCodeScreen from './routes/promotion-code'
 import AppVersionScreen from './routes/app-version'
-import EventTagScreen from './routes/event-tag/event-tag'
 import EventScreen from './routes/event/event'
+import EventQuestionScreen from './routes/event-question/event-question'
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -110,19 +110,6 @@ const tagRoute = createRoute({
   ),
 })
 
-const eventTagRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/event-tag',
-  component: () => (
-    <ProtectedRoute>
-      <div className="flex">
-        <Sidebar />
-        <EventTagScreen />
-      </div>
-    </ProtectedRoute>
-  ),
-})
-
 const eventRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/event',
@@ -131,6 +118,19 @@ const eventRoute = createRoute({
       <div className="flex">
         <Sidebar />
         <EventScreen />
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
+const eventQuestionRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/event-question',
+  component: () => (
+    <ProtectedRoute>
+      <div className="flex">
+        <Sidebar />
+        <EventQuestionScreen />
       </div>
     </ProtectedRoute>
   ),
@@ -177,7 +177,7 @@ const routeTree = rootRoute.addChildren([
   appVersionRoute,
   loginRoute,
   eventRoute,
-  eventTagRoute,
+  eventQuestionRoute,
 ])
 
 const router = createRouter({
