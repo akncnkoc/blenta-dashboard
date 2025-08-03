@@ -9,6 +9,7 @@ import { appVersionApi } from '@/services/api/app-version-api'
 import { eventApi } from '@/services/api/event-api'
 import { eventQuestionAnswerApi } from '@/services/api/event-question-answer-api'
 import { eventQuestionApi } from '@/services/api/event-question-api'
+import { notificationApi } from '@/services/api/notification-api'
 
 export const rootReducer = combineReducers({
   userSlice,
@@ -21,4 +22,5 @@ export const rootReducer = combineReducers({
   [eventApi.reducerPath]: eventApi.reducer,
   [eventQuestionAnswerApi.reducerPath]: eventQuestionAnswerApi.reducer,
   [eventQuestionApi.reducerPath]: eventQuestionApi.reducer,
+  [notificationApi.reducerPath]: notificationApi.reducer,
 })

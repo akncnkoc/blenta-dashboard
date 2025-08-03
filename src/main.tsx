@@ -25,6 +25,8 @@ import PromotionCodeScreen from './routes/promotion-code'
 import AppVersionScreen from './routes/app-version'
 import EventScreen from './routes/event/event'
 import EventQuestionScreen from './routes/event-question/event-question'
+import NotificationScreen from './routes/notification'
+import UserScreen from './routes/user'
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -160,6 +162,32 @@ const appVersionRoute = createRoute({
   ),
 })
 
+const notificationRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/notification',
+  component: () => (
+    <ProtectedRoute>
+      <div className="flex">
+        <Sidebar />
+        <NotificationScreen />
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
+const userRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/user',
+  component: () => (
+    <ProtectedRoute>
+      <div className="flex">
+        <Sidebar />
+        <UserScreen />
+      </div>
+    </ProtectedRoute>
+  ),
+})
+
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
@@ -178,6 +206,8 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   eventRoute,
   eventQuestionRoute,
+  notificationRoute,
+  userRoute,
 ])
 
 const router = createRouter({

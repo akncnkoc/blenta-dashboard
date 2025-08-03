@@ -12,6 +12,7 @@ import { appVersionApi } from '@/services/api/app-version-api'
 import { eventApi } from '@/services/api/event-api'
 import { eventQuestionAnswerApi } from '@/services/api/event-question-answer-api'
 import { eventQuestionApi } from '@/services/api/event-question-api'
+import { notificationApi } from '@/services/api/notification-api'
 
 const persistConfig = {
   key: 'root',
@@ -41,7 +42,8 @@ const store = configureStore({
       .concat(eventQuestionAnswerApi.middleware)
       .concat(eventQuestionApi.middleware)
       .concat(eventApi.middleware)
-      .concat(questionApi.middleware),
+      .concat(questionApi.middleware)
+      .concat(notificationApi.middleware),
 })
 
 const persistor = persistStore(store)

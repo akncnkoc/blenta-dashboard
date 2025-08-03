@@ -44,6 +44,12 @@ export default function Sidebar() {
           Event
         </Link>
         <Link
+          to="/user"
+          className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded transition"
+        >
+          Users
+        </Link>
+        <Link
           to="/promotion-code"
           className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded transition"
         >
@@ -54,6 +60,12 @@ export default function Sidebar() {
           className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded transition"
         >
           App Version
+        </Link>
+        <Link
+          to="/notification"
+          className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded transition"
+        >
+          Notification
         </Link>
 
         <button
