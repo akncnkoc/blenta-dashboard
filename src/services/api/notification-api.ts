@@ -13,7 +13,7 @@ export const notificationApi = createApi({
   endpoints: (builder) => ({
     sendNotification: builder.mutation<
       void,
-      { title: string; content: string }
+      { title: string; message: string }
     >({
       query: (body) => ({
         url: 'notification/send-notification',

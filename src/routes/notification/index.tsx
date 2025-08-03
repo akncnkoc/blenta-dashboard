@@ -16,7 +16,7 @@ export default function NotificationScreen() {
     toast.loading('Sending notifications')
     try {
       const res = await sendNotification({
-        content: notificationContent,
+        message: notificationContent,
         title: notificationTitle,
       })
       if (res.error) {
