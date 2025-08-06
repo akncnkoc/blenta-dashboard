@@ -31,6 +31,7 @@ export function EventQuestionTable({
 }: Props) {
   const columns: ColumnDef<EventQuestion>[] = [
     { accessorKey: 'text', header: 'Name' },
+    { accessorKey: 'sort', header: 'Sort' },
     {
       id: 'actions',
       header: '',

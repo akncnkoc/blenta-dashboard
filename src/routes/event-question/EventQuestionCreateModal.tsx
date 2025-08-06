@@ -25,9 +25,11 @@ export function EventQuestionCreateModal({ open, onOpenChange }: Props) {
   const initialValues: {
     text: string
     culture: string
+    sort: number
     answers: Array<string>
   } = {
     text: '',
+    sort: 1,
     culture: lang,
     answers: [],
   }
@@ -125,6 +127,16 @@ export function EventQuestionCreateModal({ open, onOpenChange }: Props) {
                   placeholder="Question"
                   name="text"
                   value={values.text}
+                  onChange={handleChange}
+                  required
+                />
+
+                <Label>Sort</Label>
+                <input
+                  className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Sort"
+                  name="sort"
+                  value={String(values.sort)}
                   onChange={handleChange}
                   required
                 />

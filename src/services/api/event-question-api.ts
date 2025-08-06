@@ -26,7 +26,7 @@ export const eventQuestionApi = createApi({
     }),
     createEventQuestion: builder.mutation<
       void,
-      { text: string; culture: string; answers: Array<string> }
+      { text: string; culture: string; sort: number; answers: Array<string> }
     >({
       query: (body) => ({
         url: '/event-question',
@@ -36,12 +36,18 @@ export const eventQuestionApi = createApi({
     }),
     updateEventQuestion: builder.mutation<
       void,
-      { id: string; text: string; culture: string; answers: Array<string> }
+      {
+        id: string
+        text: string
+        culture: string
+        sort: number
+        answers: Array<string>
+      }
     >({
-      query: ({ id, text, culture, answers }) => ({
+      query: ({ id, text, culture, answers, sort }) => ({
         url: `/event-question/${id}`,
         method: 'PUT',
-        body: { text, culture, answers },
+        body: { text, culture, answers, sort: Number(sort) },
       }),
     }),
     deleteEventQuestion: builder.mutation<void, string>({

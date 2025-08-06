@@ -33,10 +33,12 @@ export function EventQuestionEditModal({
   const [initialValues, setInitialValues] = useState<{
     text: string
     culture: string
+    sort: number
     answers: Array<string>
     id: string
   }>({
     text: '',
+    sort: 1,
     culture: lang,
     answers: [],
     id: eventQuestionId,
@@ -47,10 +49,10 @@ export function EventQuestionEditModal({
       getEventQuestion(eventQuestionId)
         .unwrap()
         .then((res) => {
-          console.log(res)
           setInitialValues({
             culture: res.culture,
             id: res.id,
+            sort: res.sort,
             text: res.text,
             answers: res.answers.map((answer) => answer.text) ?? [],
           })
@@ -64,10 +66,10 @@ export function EventQuestionEditModal({
         <Dialog.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-sm" />
         <Dialog.Content className="fixed top-[50%] left-[50%] w-full max-w-5xl translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-6 shadow-lg focus:outline-none">
           <Dialog.Title className="text-lg font-semibold mb-2">
-            Create Event Question
+            Update Event Question
           </Dialog.Title>
           <Dialog.Description className="text-sm text-gray-500 mb-4">
-            Add a new event question
+            Update question
           </Dialog.Description>
 
           <Formik
@@ -77,10 +79,10 @@ export function EventQuestionEditModal({
               setSubmitting(false)
               const res = await updateEventQuestion(values)
               if (res.error) {
-                toast.error('Event question not added')
+                toast.error('Event question not updated')
                 return
               }
-              toast.success('Event question created')
+              toast.success('Event question updated')
               onOpenChange(false)
             }}
           >
@@ -156,6 +158,16 @@ export function EventQuestionEditModal({
                   required
                 />
 
+                <Label>Sort</Label>
+                <input
+                  className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Sort"
+                  name="sort"
+                  value={String(values.sort)}
+                  onChange={handleChange}
+                  required
+                />
+
                 <Label>Answers</Label>
                 {/* Repeatable Answers Input */}
                 <div>
@@ -216,7 +228,7 @@ export function EventQuestionEditModal({
                     className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
                     disabled={isSubmitting}
                   >
-                    Create
+                    Update
                   </button>
                 </div>
               </form>

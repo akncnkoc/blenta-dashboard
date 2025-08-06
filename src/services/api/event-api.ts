@@ -12,6 +12,7 @@ export type EventQuestion = {
   id: string
   text: string
   culture: string
+  sort: number
   createdAt: string
   answers: EventQuestionAnswer[]
 }
